@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartBudget — Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header>
+    <h1>SmartBudget</h1>
+    <nav>
+      <a href="index.html"           class="active">Dashboard</a>
+      <a href="transactions.html">Transactions</a>
+      <a href="add-transaction.html">Add</a>
+      <a href="savings.html">Savings</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="cards" aria-label="Summary">
+      <article class="card">
+        <h3>Total Income</h3>
+        <p class="card-value income"   id="total-income">£0.00</p>
+      </article>
+      <article class="card">
+        <h3>Total Expenses</h3>
+        <p class="card-value expense"  id="total-expenses">£0.00</p>
+      </article>
+      <article class="card">
+        <h3>Net Balance</h3>
+        <p class="card-value"          id="net-balance">£0.00</p>
+      </article>
+    </section>
+
+    <section aria-label="Recent transactions">
+      <h2>Recent Transactions</h2>
+      <ul id="recent-txns"></ul>
+    </section>
+
+    <section aria-label="Monthly chart">
+      <h2>Monthly Summary</h2>
+      <div id="chart-placeholder" class="placeholder">
+        Chart loads here (Day 9 will replace this with Recharts)
+      </div>
+    </section>
+  </main>
+</body>
+</html>

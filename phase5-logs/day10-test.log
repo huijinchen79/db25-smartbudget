@@ -1,0 +1,106 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::staticFieldBase has been called by com.google.inject.internal.aop.HiddenClassDefiner (file:/opt/homebrew/Cellar/maven/3.9.10/libexec/lib/guice-5.1.0-classes.jar)
+WARNING: Please consider reporting this to the maintainers of class com.google.inject.internal.aop.HiddenClassDefiner
+WARNING: sun.misc.Unsafe::staticFieldBase will be removed in a future release
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ----------------< com.smartbudget:smartbudget-backend >-----------------
+[INFO] Building SmartBudget Backend 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ smartbudget-backend ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ smartbudget-backend ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ smartbudget-backend ---
+[INFO] skip non existing resourceDirectory /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ smartbudget-backend ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 2 source files with javac [debug parameters release 25] to target/test-classes
+[INFO] Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[62,15] constructor TransactionService in class com.smartbudget.service.TransactionService cannot be applied to given types;
+  required: com.smartbudget.repository.TransactionRepository,com.smartbudget.repository.UserRepository,com.smartbudget.repository.CategoryRepository
+  found:    no arguments
+  reason: actual and formal argument lists differ in length
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[78,28] cannot find symbol
+  symbol:   method size()
+  location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[94,47] incompatible types: java.util.List<com.smartbudget.entity.Transaction> cannot be converted to java.util.List<com.smartbudget.model.BaseTransaction>
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[111,26] cannot find symbol
+  symbol:   method findById(java.lang.String)
+  location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[112,26] cannot find symbol
+  symbol:   method findById(java.lang.String)
+  location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[124,28] cannot find symbol
+  symbol:   method size()
+  location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[135,28] cannot find symbol
+  symbol:   method size()
+  location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[138,52] incompatible types: java.lang.String cannot be converted to java.lang.Long
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[142,28] cannot find symbol
+  symbol:   method size()
+  location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[143,23] cannot find symbol
+  symbol:   method findById(java.lang.String)
+  location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[153,38] incompatible types: java.lang.String cannot be converted to java.lang.Long
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[157,28] cannot find symbol
+  symbol:   method size()
+  location: variable svc of type com.smartbudget.service.TransactionService
+[INFO] 12 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.545 s
+[INFO] Finished at: 2026-07-24T18:25:17+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.14.0:testCompile (default-testCompile) on project smartbudget-backend: Compilation failure: Compilation failure: 
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[62,15] constructor TransactionService in class com.smartbudget.service.TransactionService cannot be applied to given types;
+[ERROR]   required: com.smartbudget.repository.TransactionRepository,com.smartbudget.repository.UserRepository,com.smartbudget.repository.CategoryRepository
+[ERROR]   found:    no arguments
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[78,28] cannot find symbol
+[ERROR]   symbol:   method size()
+[ERROR]   location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[94,47] incompatible types: java.util.List<com.smartbudget.entity.Transaction> cannot be converted to java.util.List<com.smartbudget.model.BaseTransaction>
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[111,26] cannot find symbol
+[ERROR]   symbol:   method findById(java.lang.String)
+[ERROR]   location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[112,26] cannot find symbol
+[ERROR]   symbol:   method findById(java.lang.String)
+[ERROR]   location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[124,28] cannot find symbol
+[ERROR]   symbol:   method size()
+[ERROR]   location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[135,28] cannot find symbol
+[ERROR]   symbol:   method size()
+[ERROR]   location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[138,52] incompatible types: java.lang.String cannot be converted to java.lang.Long
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[142,28] cannot find symbol
+[ERROR]   symbol:   method size()
+[ERROR]   location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[143,23] cannot find symbol
+[ERROR]   symbol:   method findById(java.lang.String)
+[ERROR]   location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[153,38] incompatible types: java.lang.String cannot be converted to java.lang.Long
+[ERROR] /Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java:[157,28] cannot find symbol
+[ERROR]   symbol:   method size()
+[ERROR]   location: variable svc of type com.smartbudget.service.TransactionService
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
