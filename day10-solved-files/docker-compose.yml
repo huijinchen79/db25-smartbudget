@@ -1,0 +1,116 @@
+# ============================================================
+# TICKET-F110 / F111 (Day 10, Sprint 9) — Docker Compose
+# ============================================================
+#
+# WHAT: Docker Compose lets you run MULTIPLE containers as ONE application
+#       with a single command: docker-compose up
+#       This file defines 3 services (containers) that work together:
+#         1. db        — PostgreSQL 15 (persistent data via named volume)
+#         2. backend   — Spring Boot API built from ./backend/Dockerfile
+#         3. frontend  — React + nginx built from ./frontend/Dockerfile
+#
+# WHY:  Running 3 containers manually is tedious and error-prone:
+#         docker run postgres ...
+#         docker run backend ...   (must wait for postgres!)
+#         docker run frontend ...  (must know backend's IP!)
+#       Compose handles ordering, networking, environment variables, and volumes.
+#
+# HOW TO RUN:
+#   docker-compose up --build     # foreground; Ctrl+C to stop
+#   docker-compose up -d --build  # detached
+#   docker-compose logs -f        # tail logs
+#   docker-compose down           # stop (keeps pgdata volume)
+#   docker-compose down -v        # stop AND wipe database
+#
+# NETWORKING: Compose creates a private network where each service key
+# resolves as a hostname. So backend uses `jdbc:postgresql://db:5432/...`
+# and nginx uses `proxy_pass http://backend:8080` — no hardcoded IPs.
+# ============================================================
+
+version: "3.8"
+
+services:
+
+  # ===========================================================
+  # SERVICE 1 — PostgreSQL Database
+  # ===========================================================
+  db:
+    image: postgres:15-alpine
+    container_name: smartbudget-db
+    environment:
+      POSTGRES_DB:       smartbudget
+      POSTGRES_USER:     sb_user
+      POSTGRES_PASSWORD: sb_pass
+    volumes:
+      # Named volume — data survives `docker-compose down` (but NOT `down -v`).
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      # Exposed to the host so you can connect from pgAdmin / psql for debugging.
+      # In production you'd remove this mapping (DB should never be publicly reachable).
+      - "5432:5432"
+    healthcheck:
+      # pg_isready checks that Postgres is actually accepting connections.
+      # The backend uses `condition: service_healthy` so it waits for THIS to pass,
+      # not just for the container process to start.
+      test:         ["CMD-SHELL", "pg_isready -U sb_user -d smartbudget"]
+      interval:     5s
+      timeout:      3s
+      retries:      10
+      start_period: 5s
+    restart: unless-stopped
+
+
+  # ===========================================================
+  # SERVICE 2 — Spring Boot Backend
+  # ===========================================================
+  backend:
+    build: ./backend
+    container_name: smartbudget-backend
+    environment:
+      # SPRING_PROFILES_ACTIVE=prod loads application-prod.properties
+      # (PostgreSQL config, no H2 console, no SQL logging).
+      SPRING_PROFILES_ACTIVE:        prod
+      # Spring's RelaxedBinder maps SPRING_DATASOURCE_URL → spring.datasource.url
+      # Note the host is `db` — the compose service name, resolved via Docker's DNS.
+      SPRING_DATASOURCE_URL:         jdbc:postgresql://db:5432/smartbudget
+      SPRING_DATASOURCE_USERNAME:    sb_user
+      SPRING_DATASOURCE_PASSWORD:    sb_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_SQL_INIT_MODE:          never
+    depends_on:
+      db:
+        # Wait for the healthcheck above to pass — plain `depends_on: [db]`
+        # would only wait for the container process to start, which is too early.
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test:         ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval:     10s
+      timeout:      5s
+      retries:      5
+      start_period: 30s
+    restart: unless-stopped
+
+
+  # ===========================================================
+  # SERVICE 3 — React Frontend (nginx)
+  # ===========================================================
+  frontend:
+    build: ./frontend
+    container_name: smartbudget-frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      # Host port 80 → container port 80 (nginx). Users hit http://localhost
+      # If port 80 is already in use on your machine, change to "8081:80".
+      - "80:80"
+    restart: unless-stopped
+
+
+# ===========================================================
+# VOLUMES — Persistent storage
+# ===========================================================
+volumes:
+  pgdata:

@@ -1,0 +1,96 @@
+# ============================================================
+# TICKET-F113 / F114 / F115 (Day 10, Sprint 9) — GitHub Actions CI
+# ============================================================
+#
+# WHAT: A CI pipeline that runs on every push to main/develop and on every PR to main.
+#       Three parallel-then-sequential jobs:
+#         1. build-backend   — checkout, JDK 25, `mvn test` (compiles + runs JUnit suite)
+#         2. build-frontend  — checkout, Node 22, `npm ci`, `npm run build`
+#         3. docker-build    — after both build jobs pass, runs `docker compose build`
+#
+# WHY:  Local "works on my machine" is not proof. A clean Ubuntu runner builds
+#       from scratch on every push, so the moment someone breaks compilation
+#       or a test it shows up as a red X on the commit — not three days later.
+#       docker-build also catches Dockerfile syntax errors that `mvn` / `npm` miss.
+# ============================================================
+
+name: SmartBudget CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  # ----------------------------------------------------------
+  # Job 1 — Backend: compile + run JUnit/Mockito/MockMvc tests
+  # ----------------------------------------------------------
+  build-backend:
+    name: Backend (test)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+          cache: maven                    # auto-caches ~/.m2 between runs
+
+      - name: Run tests
+        working-directory: backend
+        run: ./mvnw -B test               # -B = batch mode (no ANSI progress spam)
+
+      # Optional: surface Surefire reports nicely in the GitHub UI.
+      # Runs even on failure so we can see which test broke.
+      - name: Publish JUnit report
+        if: always()
+        uses: mikepenz/action-junit-report@v4
+        with:
+          report_paths: 'backend/target/surefire-reports/TEST-*.xml'
+
+  # ----------------------------------------------------------
+  # Job 2 — Frontend: install deps + build the Vite bundle
+  # ----------------------------------------------------------
+  build-frontend:
+    name: Frontend (build)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build
+        working-directory: frontend
+        run: npm run build
+
+  # ----------------------------------------------------------
+  # Job 3 — Verify both Dockerfiles still produce valid images.
+  # ----------------------------------------------------------
+  # Runs only after both build jobs pass. Catches Dockerfile typos
+  # that don't show up in `mvn compile` or `npm run build`
+  # (wrong base tag, `COPY --from=biuld` typo, missing file, etc.).
+  docker-build:
+    name: Docker images
+    runs-on: ubuntu-latest
+    needs: [build-backend, build-frontend]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build images
+        run: docker compose build
