@@ -124,15 +124,21 @@ to see data.
 
 Open `http://localhost:5173/` — you should land on the Dashboard.
 
-### About `recharts`
+### About `recharts` and `react-is`
 
-`recharts` is already declared in `frontend/package.json` (^3.0.0). If
-you started from a very early snapshot of the repo where it wasn't yet
-listed, run:
+`recharts` is already declared in the starter's `frontend/package.json`
+(^3.0.0). But recharts 3.x pulls in **`react-is`** as a peer dependency
+that the starter doesn't list. Overlaying this folder's `package.json`
+adds `react-is: ^19.0.0` alongside the existing deps — without it,
+`npm run build` fails with
+`Rollup failed to resolve import "react-is" from ".../recharts/es6/util/ReactUtils.js"`.
+
+If you're patching an existing `frontend/` by hand instead of overlaying
+the whole folder, run:
 
 ```bash
 cd frontend
-npm install recharts
+npm install react-is@^19
 ```
 
 Then restart `npm run dev`.

@@ -31,7 +31,7 @@ export JAVA_HOME="$JAVA25"
 export PATH="$JAVA_HOME/bin:$PATH"
 echo "Using JAVA_HOME=$JAVA_HOME"
 
-MVN="mvn -q -o=false"   # -q quiet; leave default settings
+MVN="mvn -q"
 
 # --- Reset starter tree to first-commit state -------------------
 first_commit="$(git rev-list --max-parents=0 HEAD)"
@@ -79,12 +79,24 @@ run_backend_compile() {
 run_backend_test() {
     tag="$1"
     log="$LOG_DIR/${tag}-test.log"
-    ( cd "$REPO_ROOT/backend" && $MVN test ) >"$log" 2>&1
+    # Don't use -q on test — it suppresses the surefire summary line.
+    ( cd "$REPO_ROOT/backend" && mvn -B test ) >"$log" 2>&1
     ec=$?
     echo "$ec" > "$LOG_DIR/${tag}-test.exit"
-    # Extract "Tests run: X, Failures: Y, Errors: Z, Skipped: W" – last occurrence.
-    summary="$(grep -E 'Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+, Skipped: [0-9]+' "$log" | tail -1)"
-    [ -z "$summary" ] && summary="(no test summary — build failed before tests ran or no tests)"
+    # Prefer the surefire aggregate "Tests run: X, Failures: Y, Errors: Z, Skipped: W"
+    # line that appears near the end of a run. Fall back to per-class lines.
+    summary="$(grep -E '^\[INFO\] Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+, Skipped: [0-9]+' "$log" | tail -1 | sed 's/\[INFO\] *//')"
+    if [ -z "$summary" ]; then
+        summary="$(grep -E 'Tests run: [0-9]+, Failures: [0-9]+, Errors: [0-9]+' "$log" | tail -1 | sed 's/\[INFO\] *//')"
+    fi
+    if [ -z "$summary" ]; then
+        # If we see "No tests to run" that's meaningful — record it explicitly.
+        if grep -q "No tests to run" "$log"; then
+            summary="No tests to run"
+        else
+            summary="(no test summary — build failed before tests ran)"
+        fi
+    fi
     echo "$summary" > "$LOG_DIR/${tag}-test.summary"
     echo "  test exit=$ec  $summary"
 }
@@ -103,13 +115,14 @@ run_frontend_build() {
 }
 
 record_row() {
-    day="$1"
-    ce=$(cat "$LOG_DIR/day${day}-compile.exit" 2>/dev/null || echo "-")
-    te=$(cat "$LOG_DIR/day${day}-test.exit" 2>/dev/null || echo "-")
-    ts=$(cat "$LOG_DIR/day${day}-test.summary" 2>/dev/null || echo "-")
-    fe=$(cat "$LOG_DIR/day${day}-frontend.exit" 2>/dev/null || echo "-")
-    printf "| Day %s | %s | %s | %s | %s |\n" \
-        "$day" "$ce" "$te" "$ts" "$fe" >> "$RESULTS"
+    tag="$1"    # already includes "day" prefix or literal "baseline"
+    label="$2"  # display label
+    ce=$(cat "$LOG_DIR/${tag}-compile.exit" 2>/dev/null || echo "-")
+    te=$(cat "$LOG_DIR/${tag}-test.exit" 2>/dev/null || echo "-")
+    ts=$(cat "$LOG_DIR/${tag}-test.summary" 2>/dev/null || echo "-")
+    fe=$(cat "$LOG_DIR/${tag}-frontend.exit" 2>/dev/null || echo "-")
+    printf "| %s | %s | %s | %s | %s |\n" \
+        "$label" "$ce" "$te" "$ts" "$fe" >> "$RESULTS"
 }
 
 # --- Run --------------------------------------------------------
@@ -128,7 +141,7 @@ reset_starter
 run_backend_compile baseline
 run_backend_test baseline
 # don't build frontend at baseline — nothing has changed yet
-record_row baseline
+record_row baseline "Baseline (starter)"
 
 for D in 1 2 3 4 5 6 7 8 9 10; do
     echo "== Overlay day${D} =="
@@ -138,7 +151,7 @@ for D in 1 2 3 4 5 6 7 8 9 10; do
     if [ "$D" -ge 8 ]; then
         run_frontend_build "day${D}"
     fi
-    record_row "day${D}"
+    record_row "day${D}" "Day ${D}"
 done
 
 echo
