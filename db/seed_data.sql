@@ -97,3 +97,52 @@
 --
 -- OBSERVE: Each of the 4 INSERTs above should produce an ERROR message.
 --          Read the error message — it tells you which constraint was violated.
+-- Categories first (no dependencies)
+-- Categories first (no dependencies)
+INSERT INTO categories (name, type) VALUES
+                                        ('Salary',     'INCOME'),
+                                        ('Freelance',  'INCOME'),
+                                        ('Food',       'EXPENSE'),
+                                        ('Transport',  'EXPENSE'),
+                                        ('Utilities',  'EXPENSE');
+
+-- Users next
+INSERT INTO users (name, email) VALUES
+                                    ('Alice Smith', 'alice@bank.com'),
+                                    ('Bob Jones',   'bob@bank.com'),
+                                    ('Carol Reed',  'carol@bank.com'),
+                                    ('Dave Patel',  'dave@bank.com'),
+                                    ('Eve Lin',     'eve@bank.com');
+
+-- Transactions (15 rows across 3 months, mixed types)
+INSERT INTO transactions
+(user_id, category_id, amount, txn_date, description, type) VALUES
+                                                                (1, 1, 3500.00, '2026-01-01', 'January salary',   'INCOME'),
+                                                                (1, 3,   45.20, '2026-01-08', 'Groceries',        'EXPENSE'),
+                                                                (1, 4,   25.00, '2026-01-15', 'Bus pass',         'EXPENSE'),
+                                                                (2, 1, 4200.00, '2026-01-01', 'January salary',   'INCOME'),
+                                                                (2, 5,  120.00, '2026-01-20', 'Electricity bill', 'EXPENSE'),
+                                                                (3, 2,  800.00, '2026-02-05', 'Freelance gig',    'INCOME'),
+                                                                (3, 3,   60.00, '2026-02-10', 'Restaurant',       'EXPENSE'),
+                                                                (1, 1, 3500.00, '2026-02-01', 'February salary',  'INCOME'),
+                                                                (1, 3,   38.40, '2026-02-12', 'Groceries',        'EXPENSE'),
+                                                                (4, 1, 2800.00, '2026-02-01', 'February salary',  'INCOME'),
+                                                                (4, 4,   35.00, '2026-02-18', 'Taxi to airport',  'EXPENSE'),
+                                                                (5, 1, 3100.00, '2026-03-01', 'March salary',     'INCOME'),
+                                                                (5, 3,   52.00, '2026-03-05', 'Groceries',        'EXPENSE'),
+                                                                (2, 2,  500.00, '2026-03-10', 'Side project',     'INCOME'),
+                                                                (2, 5,   95.00, '2026-03-20', 'Internet bill',    'EXPENSE');
+
+-- Savings goals
+INSERT INTO savings_goals
+(user_id, goal_name, target_amount, current_amount, deadline) VALUES
+                                                                  (1, 'Holiday Fund',     2000.00,  450.00, '2026-12-01'),
+                                                                  (2, 'New Laptop',       1500.00, 1500.00, '2026-06-30'),  -- complete!
+                                                                  (3, 'Emergency Buffer', 5000.00,  800.00, '2026-12-31'),
+                                                                  (4, 'Wedding',         10000.00, 2500.00, '2027-09-15');
+
+-- Verify
+SELECT COUNT(*) FROM categories;     -- 5
+SELECT COUNT(*) FROM users;          -- 5
+SELECT COUNT(*) FROM transactions;   -- 15
+SELECT COUNT(*) FROM savings_goals;  -- 4
