@@ -26,6 +26,16 @@
 -- OBSERVE: The result should show human-readable names like "Alice Smith" and "Food"
 --          instead of numeric IDs like 1 and 3.
 
+SELECT txn_id
+     , u.name
+     , c.name
+     , amount
+     , txn_date
+     , description
+     , type
+FROM transactions t
+         LEFT JOIN users u ON t.user_id = u.user_id
+         LEFT JOIN categories c ON c.category_id = t.category_id;
 
 -- ============================================================
 -- TODO TICKET-F006: Q2 — EXPENSE transactions only, sorted by amount (highest first)
@@ -44,6 +54,9 @@
 -- OBSERVE: All results should have type = 'EXPENSE'.
 --          The first row should have the highest amount.
 
+SELECT * FROM transactions
+WHERE type = 'EXPENSE'
+ORDER BY amount DESC;
 
 -- ============================================================
 -- TODO TICKET-F006: Q3 — Monthly totals per user
@@ -65,6 +78,14 @@
 -- OBSERVE: Each row should show one user + one month + their total.
 --          For example: "Alice Smith | 2026-05-01 | 3652.50"
 
+SELECT users.name
+     , DATE_TRUNC('month', txn_date)
+     , transactions.amount
+FROM transactions
+         LEFT JOIN users ON transactions.user_id = users.user_id
+GROUP BY 2;
+
+
 
 -- ============================================================
 -- TODO TICKET-F006: Q4 — Top 5 highest transactions
@@ -79,7 +100,9 @@
 --
 -- OBSERVE: You should see exactly 5 rows, with the highest amount first.
 
-
+SELECT * FROM transactions
+ORDER BY amount
+    LIMIT 5;
 -- ============================================================
 -- TODO TICKET-F006: Q5 — Running balance per user (Window Function)
 -- ============================================================
@@ -120,3 +143,139 @@
 --
 -- OBSERVE: After creating, run: SELECT * FROM monthly_summary;
 --          You should see one row per user per month with income/expense split.
+-- ============================================================
+-- Q1: All transactions with user + category names (3-table JOIN)
+-- ============================================================
+SELECT t.txn_id,
+       u.name  AS user_name,
+       c.name  AS category,
+       t.amount,
+       t.txn_date,
+       t.description,
+       t.type
+FROM transactions t
+         JOIN users      u ON t.user_id     = u.user_id
+         JOIN categories c ON t.category_id = c.category_id
+ORDER BY t.txn_date DESC, t.txn_id;
+
+-- ============================================================
+-- Q2: EXPENSE only, highest amount first
+-- ============================================================
+SELECT t.txn_id, u.name, c.name AS category, t.amount, t.txn_date
+FROM transactions t
+         JOIN users      u ON t.user_id     = u.user_id
+         JOIN categories c ON t.category_id = c.category_id
+WHERE t.type = 'EXPENSE'
+ORDER BY t.amount DESC;
+
+-- ============================================================
+-- Q3: Monthly totals per user
+-- ============================================================
+SELECT u.name,
+       TO_CHAR(DATE_TRUNC('month', t.txn_date), 'Mon YYYY') AS month,
+       SUM(t.amount) AS total
+FROM transactions t
+    JOIN users u ON t.user_id = u.user_id
+GROUP BY u.name, DATE_TRUNC('month', t.txn_date)
+ORDER BY u.name, DATE_TRUNC('month', t.txn_date);
+
+-- ============================================================
+-- Q4: Running balance per user (window function)
+--   Income adds, expense subtracts.
+-- ============================================================
+SELECT u.name,
+       t.txn_date,
+       t.type,
+       t.amount,
+       SUM(CASE WHEN t.type = 'INCOME' THEN  t.amount
+                ELSE -t.amount END)
+           OVER (PARTITION BY u.user_id ORDER BY t.txn_date, t.txn_id)
+           AS running_balance
+FROM transactions t
+         JOIN users u ON t.user_id = u.user_id
+ORDER BY u.name, t.txn_date, t.txn_id;
+
+-- ============================================================
+-- Q5: VIEW — top 3 expense categories by total spend
+-- ============================================================
+CREATE OR REPLACE VIEW top_expense_categories AS
+SELECT c.name AS category, SUM(t.amount) AS total_spent
+FROM transactions t
+         JOIN categories c ON t.category_id = c.category_id
+WHERE c.type = 'EXPENSE'
+GROUP BY c.name
+ORDER BY total_spent DESC
+    LIMIT 3;
+
+SELECT * FROM top_expense_categories;
+
+
+--Ticket F007:
+
+SELECT t.txn_id,
+       u.name        AS user_name,
+       c.name        AS category,
+       t.amount,
+       t.txn_date,
+       t.description,
+       t.type
+FROM transactions t
+         JOIN users      u ON t.user_id     = u.user_id
+         JOIN categories c ON t.category_id = c.category_id
+ORDER BY t.txn_date DESC, t.txn_id;
+
+
+-- Ticket F008:
+
+CREATE OR REPLACE VIEW top_expense_categories AS
+SELECT c.name           AS category,
+       SUM(t.amount)    AS total_spent,
+       COUNT(*)         AS txn_count
+FROM transactions t
+         JOIN categories  c ON t.category_id = c.category_id
+WHERE c.type = 'EXPENSE'
+GROUP BY c.name
+ORDER BY total_spent DESC
+    LIMIT 3;
+
+-- Use it like a regular table
+SELECT * FROM top_expense_categories;
+
+--TICKET FOO9
+
+SELECT u.name,
+       t.txn_date,
+       t.type,
+       t.amount,
+       SUM( CASE WHEN t.type = 'INCOME' THEN  t.amount
+                 ELSE -t.amount END )
+           OVER ( PARTITION BY u.user_id
+                  ORDER BY     t.txn_date, t.txn_id )
+           AS running_balance
+FROM transactions t
+         JOIN users u ON t.user_id = u.user_id
+ORDER BY u.name, t.txn_date, t.txn_id;
+
+-- TICKET F010
+
+WITH income AS (
+    SELECT user_id, SUM(amount) AS total
+    FROM transactions
+    WHERE type = 'INCOME'
+    GROUP BY user_id
+),
+     expenses AS (
+         SELECT user_id, SUM(amount) AS total
+         FROM transactions
+         WHERE type = 'EXPENSE'
+         GROUP BY user_id
+     )
+SELECT u.user_id,
+       u.name,
+       COALESCE(i.total, 0)                          AS total_income,
+       COALESCE(e.total, 0)                          AS total_expenses,
+       COALESCE(i.total, 0) - COALESCE(e.total, 0)   AS net_balance
+FROM users u
+         LEFT JOIN income   i ON u.user_id = i.user_id
+         LEFT JOIN expenses e ON u.user_id = e.user_id
+ORDER BY net_balance DESC;
