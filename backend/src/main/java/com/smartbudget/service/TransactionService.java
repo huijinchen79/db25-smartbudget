@@ -3,7 +3,11 @@ package com.smartbudget.service;
 import com.smartbudget.model.BaseTransaction;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+
+import org.hibernate.mapping.Map;
+
 import java.time.LocalDate;
 import java.math.BigDecimal;
 import java.io.BufferedWriter;
@@ -26,7 +30,49 @@ import com.smartbudget.model.ExpenseTransaction;
 //
 // Each day BUILDS on the previous — don't delete old code, evolve it.
 // ============================================================
+
 public class TransactionService {
+
+    private final Map<String, BaseTransaction> transactions = new HashMap<>();
+
+    public void addTransaction(BaseTransaction t) {
+        if (t == null) {
+            throw new IllegalArgumentException("transaction must not be null");
+        }
+        if (t.getDescription() == null || t.getDescription().isBlank()) {
+            throw new InvalidTransactionException("description must not be blank");
+        }
+        transactions.put(String.valueOf(t.getTxnId()), t);
+    }
+
+    public BaseTransaction findById(String id) { return transactions.get(id); }
+
+    public boolean delete(String id) { return transactions.remove(id) != null; }
+
+    public List<BaseTransaction> getAll() {
+        return new ArrayList<>(transactions.values());
+    }
+
+    public int size() { return transactions.size(); }
+
+    public List<BaseTransaction> filterByDateRange(LocalDate from, LocalDate to) {
+        List<BaseTransaction> result = new ArrayList<>();
+        for (BaseTransaction t : transactions.values()) {
+            LocalDate d = t.getTxnDate();
+            if (!d.isBefore(from) && !d.isAfter(to)) result.add(t);
+        }
+        return result;
+    }
+
+    public BigDecimal calculateTotalByType(String type) {
+        BigDecimal total = BigDecimal.ZERO;
+        for (BaseTransaction t : transactions.values()) {
+            if (type.equals(t.getType())) total = total.add(t.getAmount());
+        }
+        return total;
+    }
+}
+
 
     // ==========================================================
     //  DAY 3 (Sprint 2): Plain Java with ArrayList
@@ -59,22 +105,8 @@ public class TransactionService {
     //       This is a defensive programming practice.
     //
     // OBSERVE: Call addTransaction 3 times, then getAll(). The list should have 3 items.
-    private final List<BaseTransaction> transactions = new ArrayList<>();
 
-
-    /** Defensive copy — caller mutations don't leak into our state. */
-    public List<BaseTransaction> getAll() {
-        return new ArrayList<>(transactions);
-    }
-
-    /** Read-only alternative — fails fast on attempted mutation. */
-    public List<BaseTransaction> getAllUnmodifiable() {
-        return Collections.unmodifiableList(transactions);
-    }
-
-    public int size() {
-        return transactions.size();
-    }
+    
     // -------------------------------------------------------
     // TODO TICKET-F027: filterByDateRange(LocalDate from, LocalDate to)
     // -------------------------------------------------------
@@ -91,22 +123,22 @@ public class TransactionService {
     //
     // OBSERVE: Add transactions with different dates, then filter for a specific range.
     //          Only transactions within that range should appear.
-    public List<BaseTransaction> filterByDateRange(LocalDate from, LocalDate to) {
-        if (from == null || to == null) {
-            throw new IllegalArgumentException("from and to must be non-null");
-        }
-        if (from.isAfter(to)) {
-            return new ArrayList<>();           // empty range, not error
-        }
-        List<BaseTransaction> result = new ArrayList<>();
-        for (BaseTransaction t : transactions) {
-            LocalDate d = t.getTxnDate();
-            if (!d.isBefore(from) && !d.isAfter(to)) {
-                result.add(t);
-            }
-        }
-        return result;
-    }
+   // public List<BaseTransaction> filterByDateRange(LocalDate from, LocalDate to) {
+   //     if (from == null || to == null) {
+   //         throw new IllegalArgumentException("from and to must be non-null");
+     //   }
+        //if (from.isAfter(to)) {
+        //    return new ArrayList<>();           // empty range, not error
+       // }
+       // List<BaseTransaction> result = new ArrayList<>();
+        //for (BaseTransaction t : transactions) {
+         //   LocalDate d = t.getTxnDate();
+          //  if (!d.isBefore(from) && !d.isAfter(to)) {
+            //    result.add(t);
+           // }
+       // }
+       // return result;
+   // }
 
     // -------------------------------------------------------
     // TODO TICKET-F028: calculateTotalByType(String type)
