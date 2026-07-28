@@ -10,6 +10,23 @@ import java.util.stream.Collectors;
 
 public class TransactionService {
 
+    public List<BaseTransaction> getSortedByAmount() {
+        return transactions.values().stream()
+                .sorted((a, b) -> b.getAmount().compareTo(a.getAmount()))
+                .collect(Collectors.toList());
+    }
+
+    public List<BaseTransaction> getSortedByAmount() {
+        return transactions.values().stream()
+                .sorted(new Comparator<BaseTransaction>() {
+                    @Override
+                    public int compare(BaseTransaction a, BaseTransaction b) {
+                        return b.getAmount().compareTo(a.getAmount());
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+
     public List<BaseTransaction> getExpensesOver100() {
         BigDecimal threshold = new BigDecimal("100");
         return transactions.values().stream()

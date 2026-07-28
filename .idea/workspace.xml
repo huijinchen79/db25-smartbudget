@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a4fc8e51-8023-4534-9db1-89a847d3228e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/exception/InvalidTransactionException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/exception/InvalidTransactionException.java" afterDir="false" />
+    <list default="true" id="a4fc8e51-8023-4534-9db1-89a847d3228e" name="Changes" comment="xyz">
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -110,6 +108,15 @@
       <option name="presentableId" value="Default" />
       <updated>1784718939572</updated>
     </task>
+    <task id="LOCAL-00001" summary="xyz">
+      <option name="closed" value="true" />
+      <created>1785248839763</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1785248839763</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -135,6 +142,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="updated category, main, savinggoal,transction and user.jave" />
     <MESSAGE value="updated db create_tables,quesries,seed_data.sql" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated db create_tables,quesries,seed_data.sql" />
+    <MESSAGE value="xyz" />
+    <option name="LAST_COMMIT_MESSAGE" value="xyz" />
   </component>
 </project>
