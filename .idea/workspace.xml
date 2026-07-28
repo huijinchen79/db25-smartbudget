@@ -4,27 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a4fc8e51-8023-4534-9db1-89a847d3228e" name="Changes" comment="f35 fix">
-      <change afterPath="$PROJECT_DIR$/.ai/mcp/mcp.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_28_07_2026,_10_22_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_28_07_2026,_13_36_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_28_07_2026,_13_36_[Changes]1/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_28_07_2026,_13_43_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_28_07_2026__10_22__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_28_07_2026__13_36__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_28_07_2026__13_43__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_07_2026,_13_20_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_27_07_2026__13_20__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_07_2026,_10_17_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_07_2026,_13_42_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_07_2026__10_17__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_07_2026__13_42__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="a4fc8e51-8023-4534-9db1-89a847d3228e" name="Changes" comment="ticket 38-40">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/dao/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/dao/DatabaseConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/dao/TransactionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/dao/TransactionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/exception/InvalidTransactionException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/exception/InvalidTransactionException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,6 +171,7 @@
     <MESSAGE value="f34" />
     <MESSAGE value="f34 fix" />
     <MESSAGE value="f35 fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="f35 fix" />
+    <MESSAGE value="ticket 38-40" />
+    <option name="LAST_COMMIT_MESSAGE" value="ticket 38-40" />
   </component>
 </project>
