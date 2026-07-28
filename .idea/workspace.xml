@@ -3,11 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a4fc8e51-8023-4534-9db1-89a847d3228e" name="Changes" comment="updated db create_tables,quesries,seed_data.sql">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/console/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/console/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/exception/InvalidTransactionException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/exception/InvalidTransactionException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/BaseTransaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/BaseTransaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/ExpenseTransaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/ExpenseTransaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/IncomeTransaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/IncomeTransaction.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -21,6 +16,11 @@
     </colors>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="branch_day3" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -53,7 +53,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "branch__day3",
+    "git-widget-placeholder": "branch__day4",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026",
     "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
