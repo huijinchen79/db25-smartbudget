@@ -1,7 +1,9 @@
 package com.smartbudget.model;
 
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 
 // ============================================================
 // TICKET-F022 (Day 3, Sprint 2) — Income Transaction Subclass
@@ -88,4 +90,13 @@ public class IncomeTransaction extends BaseTransaction {
     //
     // OBSERVE: Print an IncomeTransaction — you should see the parent's fields
     //          PLUS the source field at the end.
+    public IncomeTransaction(int txnId, BigDecimal amount,
+                             LocalDate txnDate, String description) {
+        super(txnId, amount, txnDate, description);
+    }
+
+    @Override
+    public String getType() {
+        return "INCOME";
+    }
 }

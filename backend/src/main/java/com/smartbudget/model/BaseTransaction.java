@@ -1,5 +1,6 @@
 package com.smartbudget.model;
 
+import com.smartbudget.exception.InvalidTransactionException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -95,7 +96,40 @@ public abstract class BaseTransaction {
     // WHY:  This follows the Encapsulation principle: fields are hidden,
     //       access is controlled through methods. If you later need to add
     //       logic (e.g., rounding), you change the getter without affecting callers.
+        protected int txnId;
+        protected BigDecimal amount;
+        protected LocalDate txnDate;
+        protected String description;
 
+        public BaseTransaction(int txnId, BigDecimal amount,
+                               LocalDate txnDate, String description) {
+            if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new InvalidTransactionException(
+                        "Amount must be greater than zero, got: " + amount);
+            }
+            if (txnDate == null || txnDate.isAfter(LocalDate.now())) {
+                throw new InvalidTransactionException(
+                        "Transaction date cannot be in the future: " + txnDate);
+            }
+            this.txnId       = txnId;
+            this.amount      = amount;
+            this.txnDate     = txnDate;
+            this.description = description;
+        }
+
+        public abstract String getType();
+
+        public int getTxnId()              { return txnId; }
+        public BigDecimal getAmount()      { return amount; }
+        public LocalDate getTxnDate()      { return txnDate; }
+        public String getDescription()     { return description; }
+
+        @Override
+        public String toString() {
+            return String.format("[%s] id=%d | %s | %s | %s",
+                    getType(), txnId, amount, txnDate, description);
+        }
+    }
     // -------------------------------------------------------
     // TODO TICKET-F021: Step 5 — Override toString()
     // -------------------------------------------------------
@@ -112,4 +146,5 @@ public abstract class BaseTransaction {
     //
     // OBSERVE: After implementing, create a transaction and print it with System.out.println().
     //          You should see a formatted string, not a memory address.
-}
+
+

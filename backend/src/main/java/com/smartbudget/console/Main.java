@@ -1,6 +1,12 @@
 package com.smartbudget.console;
 
+import com.smartbudget.exception.InvalidTransactionException;
+import com.smartbudget.model.BaseTransaction;
+import com.smartbudget.model.ExpenseTransaction;
+import com.smartbudget.model.IncomeTransaction;
 import com.smartbudget.model.Transaction;
+import com.smartbudget.service.TransactionService;
+import java.io.IOException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -60,6 +66,22 @@ public class Main {
         // OBSERVE: After creating the list, print its .size() to verify — should be 10+.
 
         seed(); // Seed the data on startup
+
+        // -------------------------------------------------------
+        // TICKET-F022: IncomeTransaction subclass test
+        // -------------------------------------------------------
+        IncomeTransaction salary = new IncomeTransaction(
+                1, new BigDecimal("3500.00"), LocalDate.now(), "January salary");
+        System.out.println(salary.getType());   // INCOME
+        System.out.println(salary);             // [INCOME] id=1 | 3500.00 | 2026-... | January salary
+
+        // Validation inherited from BaseTransaction:
+        try {
+            new IncomeTransaction(2, new BigDecimal("-100"),
+                    LocalDate.now(), "Bad");
+        } catch (InvalidTransactionException e) {
+            System.out.println("Rejected: " + e.getMessage());
+        }
 
         // -------------------------------------------------------
         // TODO TICKET-F016: Step 2 — Build the menu loop
@@ -149,6 +171,360 @@ public class Main {
         //
         //          Try valid data.
         //          It should add successfully and appear in the list.
+
+        // -------------------------------------------------------
+        // TICKET-F023: Polymorphism test
+        // -------------------------------------------------------
+        List<BaseTransaction> mixed = new ArrayList<>();
+
+        mixed.add(new IncomeTransaction(
+                1,
+                new BigDecimal("3500"),
+                LocalDate.now(),
+                "Salary"
+        ));
+
+        mixed.add(new ExpenseTransaction(
+                2,
+                new BigDecimal("45"),
+                LocalDate.now(),
+                "Groceries",
+                "Food"
+        ));
+
+        mixed.add(new IncomeTransaction(
+                3,
+                new BigDecimal("800"),
+                LocalDate.now(),
+                "Freelance"
+        ));
+
+        mixed.add(new ExpenseTransaction(
+                4,
+                new BigDecimal("120"),
+                LocalDate.now(),
+                "Bills",
+                "Utilities"
+        ));
+
+        System.out.println("Total rows: " + mixed.size());
+
+        for (BaseTransaction t : mixed) {
+            System.out.println(t.getType() + " -> " + t);
+        }
+
+        // -------------------------------------------------------
+        // TICKET-F026: TransactionService test
+        // -------------------------------------------------------
+
+        TransactionService svc = new TransactionService();
+
+        svc.addTransaction(
+                new IncomeTransaction(
+                        1,
+                        new BigDecimal("100"),
+                        LocalDate.now(),
+                        "Test Income"
+                )
+        );
+
+        svc.addTransaction(
+                new ExpenseTransaction(
+                        2,
+                        new BigDecimal("20"),
+                        LocalDate.now(),
+                        "Test Expense",
+                        "Food"
+                )
+        );
+
+        System.out.println("Size before clear: " + svc.size());
+
+        List<BaseTransaction> view = svc.getAll();
+
+        view.clear();          // only clears the COPY
+
+        System.out.println("Size after clear: " + svc.size());
+
+        // -------------------------------------------------------
+        // TICKET-F027: Filter by Date Range test
+        // -------------------------------------------------------
+
+        TransactionService dateService = new TransactionService();
+
+        dateService.addTransaction(
+                new IncomeTransaction(
+                        1,
+                        new BigDecimal("100"),
+                        LocalDate.of(2026, 1, 5),
+                        "Jan"
+                )
+        );
+
+        dateService.addTransaction(
+                new IncomeTransaction(
+                        2,
+                        new BigDecimal("100"),
+                        LocalDate.of(2026, 2, 15),
+                        "Feb"
+                )
+        );
+
+        dateService.addTransaction(
+                new IncomeTransaction(
+                        3,
+                        new BigDecimal("100"),
+                        LocalDate.of(2026, 3, 25),
+                        "Mar"
+                )
+        );
+
+        List<BaseTransaction> jan = dateService.filterByDateRange(
+                LocalDate.of(2026, 1, 1),
+                LocalDate.of(2026, 1, 31)
+        );
+
+        System.out.println("January rows: " + jan.size());
+
+        List<BaseTransaction> q1 = dateService.filterByDateRange(
+                LocalDate.of(2026, 1, 1),
+                LocalDate.of(2026, 3, 31)
+        );
+
+        System.out.println("Q1 rows: " + q1.size());
+
+        List<BaseTransaction> boundary = dateService.filterByDateRange(
+                LocalDate.of(2026, 1, 5),
+                LocalDate.of(2026, 3, 25)
+        );
+
+        System.out.println("Boundary rows: " + boundary.size());
+
+        List<BaseTransaction> reversed = dateService.filterByDateRange(
+                LocalDate.of(2026, 3, 1),
+                LocalDate.of(2026, 1, 1)
+        );
+
+        System.out.println("Reversed rows: " + reversed.size());
+
+        // -------------------------------------------------------
+// TICKET-F028: Calculate Total by Type test
+// -------------------------------------------------------
+
+        TransactionService totalService = new TransactionService();
+
+        totalService.addTransaction(
+                new IncomeTransaction(
+                        1,
+                        new BigDecimal("3500"),
+                        LocalDate.now(),
+                        "Salary"
+                )
+        );
+
+        totalService.addTransaction(
+                new ExpenseTransaction(
+                        2,
+                        new BigDecimal("45"),
+                        LocalDate.now(),
+                        "Groceries",
+                        "Food"
+                )
+        );
+
+        totalService.addTransaction(
+                new IncomeTransaction(
+                        3,
+                        new BigDecimal("800"),
+                        LocalDate.now(),
+                        "Freelance"
+                )
+        );
+
+        totalService.addTransaction(
+                new ExpenseTransaction(
+                        4,
+                        new BigDecimal("120"),
+                        LocalDate.now(),
+                        "Bills",
+                        "Utilities"
+                )
+        );
+
+        System.out.println(
+                "Total INCOME: "
+                        + totalService.calculateTotalByType("INCOME")
+        );
+
+        System.out.println(
+                "Total EXPENSE: "
+                        + totalService.calculateTotalByType("EXPENSE")
+        );
+
+        System.out.println(
+                "Total UNKNOWN: "
+                        + totalService.calculateTotalByType("UNKNOWN")
+        );
+
+
+        // -------------------------------------------------------
+// TICKET-F029: Export to CSV test
+// -------------------------------------------------------
+
+        TransactionService csvService = new TransactionService();
+
+        csvService.addTransaction(
+                new IncomeTransaction(
+                        1,
+                        new BigDecimal("3500.00"),
+                        LocalDate.of(2026, 1, 1),
+                        "January salary"
+                )
+        );
+
+        csvService.addTransaction(
+                new ExpenseTransaction(
+                        2,
+                        new BigDecimal("45.20"),
+                        LocalDate.of(2026, 1, 8),
+                        "Groceries",
+                        "Food"
+                )
+        );
+
+        csvService.addTransaction(
+                new ExpenseTransaction(
+                        3,
+                        new BigDecimal("25.00"),
+                        LocalDate.of(2026, 1, 15),
+                        "Bus pass",
+                        "Transport"
+                )
+        );
+
+        try {
+            csvService.exportToCSV("transactions.csv");
+            System.out.println("CSV export successful.");
+        } catch (IOException e) {
+            System.out.println("CSV export failed: " + e.getMessage());
+        }
+
+        // -------------------------------------------------------
+// TICKET-F030: Import from CSV test
+// -------------------------------------------------------
+
+        TransactionService a = new TransactionService();
+
+        a.addTransaction(
+                new IncomeTransaction(
+                        1,
+                        new BigDecimal("100"),
+                        LocalDate.now(),
+                        "X"
+                )
+        );
+
+        a.addTransaction(
+                new ExpenseTransaction(
+                        2,
+                        new BigDecimal("50"),
+                        LocalDate.now(),
+                        "Y",
+                        "Misc"
+                )
+        );
+
+        try {
+
+            a.exportToCSV("tmp.csv");
+
+            TransactionService b = new TransactionService();
+
+            b.importFromCSV("tmp.csv");
+
+            System.out.println("Imported rows: " + b.getAll().size());
+
+            System.out.println(
+                    "Income = "
+                            + b.calculateTotalByType("INCOME")
+            );
+
+            System.out.println(
+                    "Expense = "
+                            + b.calculateTotalByType("EXPENSE")
+            );
+
+        } catch (IOException e) {
+
+            System.out.println(
+                    "File not found at path: "
+                            + e.getMessage()
+            );
+        }
+
+        // -------------------------------------------------------
+// TICKET-F031: Validate on Add test
+// -------------------------------------------------------
+
+        TransactionService validationService =
+                new TransactionService();
+
+// 1. null transaction
+        try {
+            validationService.addTransaction(null);
+        } catch (IllegalArgumentException e) {
+            System.out.println(
+                    "Rejected null: " + e.getMessage()
+            );
+        }
+
+// 2. blank description
+        try {
+            validationService.addTransaction(
+                    new IncomeTransaction(
+                            1,
+                            new BigDecimal("100"),
+                            LocalDate.now(),
+                            "   "
+                    )
+            );
+        } catch (InvalidTransactionException e) {
+            System.out.println(
+                    "Rejected blank desc: " + e.getMessage()
+            );
+        }
+
+// 3. negative amount
+// Rejected by BaseTransaction constructor
+        try {
+            validationService.addTransaction(
+                    new IncomeTransaction(
+                            2,
+                            new BigDecimal("-10"),
+                            LocalDate.now(),
+                            "ok"
+                    )
+            );
+        } catch (InvalidTransactionException e) {
+            System.out.println(
+                    "Rejected negative amount: " + e.getMessage()
+            );
+        }
+
+// 4. valid transaction
+        validationService.addTransaction(
+                new IncomeTransaction(
+                        3,
+                        new BigDecimal("500"),
+                        LocalDate.now(),
+                        "Salary"
+                )
+        );
+
+        System.out.println(
+                "Valid transaction count: "
+                        + validationService.getAll().size()
+        );
 
         Scanner sc = new Scanner(System.in);
         boolean running = true;
@@ -527,4 +903,6 @@ public class Main {
         System.out.println("-".repeat(28));
         System.out.printf("Net Balance:     %12.2f%n", net);
     }
+
+
 }

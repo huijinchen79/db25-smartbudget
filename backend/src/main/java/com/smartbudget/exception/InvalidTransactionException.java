@@ -40,4 +40,11 @@ public class InvalidTransactionException extends RuntimeException {
     // OBSERVE: After implementing, go to BaseTransaction and use it in the constructor validation.
     //          Then create a transaction with amount = -10. Your console should show:
     //          "InvalidTransactionException: Amount must be greater than zero"
+    public InvalidTransactionException(String message) {
+        super(message);
+    }
+
+    public InvalidTransactionException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
