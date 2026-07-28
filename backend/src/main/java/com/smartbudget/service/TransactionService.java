@@ -1,5 +1,22 @@
 package com.smartbudget.service;
 
+import com.smartbudget.model.BaseTransaction;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.time.LocalDate;
+import java.math.BigDecimal;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.time.format.DateTimeParseException;
+
+import com.smartbudget.exception.InvalidTransactionException;
+import com.smartbudget.model.IncomeTransaction;
+import com.smartbudget.model.ExpenseTransaction;
 // ============================================================
 // TransactionService — evolves across THREE days:
 //
@@ -42,7 +59,22 @@ public class TransactionService {
     //       This is a defensive programming practice.
     //
     // OBSERVE: Call addTransaction 3 times, then getAll(). The list should have 3 items.
+    private final List<BaseTransaction> transactions = new ArrayList<>();
 
+
+    /** Defensive copy — caller mutations don't leak into our state. */
+    public List<BaseTransaction> getAll() {
+        return new ArrayList<>(transactions);
+    }
+
+    /** Read-only alternative — fails fast on attempted mutation. */
+    public List<BaseTransaction> getAllUnmodifiable() {
+        return Collections.unmodifiableList(transactions);
+    }
+
+    public int size() {
+        return transactions.size();
+    }
     // -------------------------------------------------------
     // TODO TICKET-F027: filterByDateRange(LocalDate from, LocalDate to)
     // -------------------------------------------------------
@@ -59,6 +91,22 @@ public class TransactionService {
     //
     // OBSERVE: Add transactions with different dates, then filter for a specific range.
     //          Only transactions within that range should appear.
+    public List<BaseTransaction> filterByDateRange(LocalDate from, LocalDate to) {
+        if (from == null || to == null) {
+            throw new IllegalArgumentException("from and to must be non-null");
+        }
+        if (from.isAfter(to)) {
+            return new ArrayList<>();           // empty range, not error
+        }
+        List<BaseTransaction> result = new ArrayList<>();
+        for (BaseTransaction t : transactions) {
+            LocalDate d = t.getTxnDate();
+            if (!d.isBefore(from) && !d.isAfter(to)) {
+                result.add(t);
+            }
+        }
+        return result;
+    }
 
     // -------------------------------------------------------
     // TODO TICKET-F028: calculateTotalByType(String type)
@@ -75,7 +123,26 @@ public class TransactionService {
     //
     // OBSERVE: Add some income and expense transactions.
     //          calculateTotalByType("INCOME") should return the sum of all incomes.
+    public BigDecimal calculateTotalByType(String type) {
+        if (type == null) {
+            throw new IllegalArgumentException("type must not be null");
+        }
+        BigDecimal total = BigDecimal.ZERO;
+        for (BaseTransaction t : transactions) {
+            if (type.equals(t.getType())) {
+                total = total.add(t.getAmount());
+            }
+        }
+        return total;
+    }
 
+    // Bonus: stream version — same behaviour, more idiomatic from Java 8 onwards
+    public BigDecimal calculateTotalByTypeStream(String type) {
+        return transactions.stream()
+                .filter(t -> type.equals(t.getType()))
+                .map(BaseTransaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
     // -------------------------------------------------------
     // TODO TICKET-F029: exportToCSV(String filePath)
     // -------------------------------------------------------
@@ -93,7 +160,33 @@ public class TransactionService {
     //
     // OBSERVE: After exporting, open the file in a text editor or Excel.
     //          Each transaction should be one row with comma-separated values.
+    public void exportToCSV(String filePath) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            // Header
+            bw.write("id,type,amount,date,description");
+            bw.newLine();
 
+            // Data rows
+            for (BaseTransaction t : transactions) {
+                bw.write(String.join(",",
+                        String.valueOf(t.getTxnId()),
+                        t.getType(),
+                        t.getAmount().toPlainString(),
+                        t.getTxnDate().toString(),
+                        csvEscape(t.getDescription())
+                ));
+                bw.newLine();
+            }
+        }
+    }
+
+    private static String csvEscape(String s) {
+        if (s == null) return "";
+        if (s.contains(",") || s.contains("\"") || s.contains("\n")) {
+            return "\"" + s.replace("\"", "\"\"") + "\"";
+        }
+        return s;
+    }
     // -------------------------------------------------------
     // TODO TICKET-F030: importFromCSV(String filePath)
     // -------------------------------------------------------
@@ -132,7 +225,37 @@ public class TransactionService {
     //       requires looping through every element (O(n)). This matters at scale.
     //
     // OBSERVE: All existing functionality should still work — just faster lookups by ID.
+    public void importFromCSV(String filePath) throws IOException {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line = br.readLine();
+            if (line == null) return;                    // empty file
 
+            int lineNum = 1;
+            while ((line = br.readLine()) != null) {
+                lineNum++;
+                if (line.isBlank()) continue;
+                try {
+                    String[] parts = line.split(",", -1);
+                    int id            = Integer.parseInt(parts[0].trim());
+                    String type       = parts[1].trim();
+                    BigDecimal amount = new BigDecimal(parts[2].trim());
+                    LocalDate date    = LocalDate.parse(parts[3].trim());
+                    String desc       = parts.length > 4 ? parts[4] : "";
+
+                    BaseTransaction t = switch (type) {
+                        case "INCOME"  -> new IncomeTransaction (id, amount, date, desc);
+                        case "EXPENSE" -> new ExpenseTransaction(id, amount, date, desc, "Imported");
+                        default -> throw new InvalidTransactionException(
+                                "Unknown type on line " + lineNum + ": " + type);
+                    };
+                    transactions.add(t);
+                } catch (NumberFormatException | DateTimeParseException e) {
+                    System.err.println("Skipping bad row at line "
+                            + lineNum + ": " + e.getMessage());
+                }
+            }
+        }
+    }
     // -------------------------------------------------------
     // TODO TICKET-F033: Add Stream-based filtering
     // -------------------------------------------------------
@@ -151,6 +274,16 @@ public class TransactionService {
     //
     // OBSERVE: Compare the Stream version with the for-loop version (Day 3).
     //          Same result, fewer lines, more readable.
+    public void addTransaction(BaseTransaction t) {
+        if (t == null) {
+            throw new IllegalArgumentException("transaction must not be null");
+        }
+        if (t.getDescription() == null || t.getDescription().isBlank()) {
+            throw new InvalidTransactionException(
+                    "description must not be blank for transaction id=" + t.getTxnId());
+        }
+        transactions.add(t);
+    }
 
     // -------------------------------------------------------
     // TODO TICKET-F034: Lambda Comparator for custom sorting
