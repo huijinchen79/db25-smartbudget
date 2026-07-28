@@ -1,10 +1,12 @@
 package com.smartbudget.service;
 
+
 import com.smartbudget.model.BaseTransaction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 import java.time.LocalDate;
@@ -70,58 +72,10 @@ public class TransactionService {
         }
         return total;
     }
-}
 
 
-    // ==========================================================
-    //  DAY 3 (Sprint 2): Plain Java with ArrayList
-    // ==========================================================
 
-    // -------------------------------------------------------
-    // TODO TICKET-F026: Step 1 — Add a storage field
-    // -------------------------------------------------------
-    // WHAT: A List (specifically ArrayList) stores transactions in memory.
-    //       This is NOT a database — data is lost when the program exits.
-    //       Think of it as a temporary in-memory storage for practice.
-    //
-    // HOW:  Declare a private field of type List<BaseTransaction> and initialize it as a new ArrayList.
-    //       Import BaseTransaction from com.smartbudget.model.
-    //
-    // WHY:  Before connecting to a database (Day 4), you need somewhere to store data.
-    //       ArrayList is the simplest collection — it maintains insertion order and allows duplicates.
-
-    // -------------------------------------------------------
-    // TODO TICKET-F026: Step 2 — addTransaction() and getAll()
-    // -------------------------------------------------------
-    // WHAT: Basic CRUD operations — Create and Read.
-    //       addTransaction adds a BaseTransaction to the list.
-    //       getAll returns all transactions (return a copy, not the original list).
-    //
-    // HOW:  addTransaction: accepts a BaseTransaction, calls list.add(t).
-    //       getAll: returns new ArrayList<>(transactions) — a defensive copy.
-    //
-    // WHY:  Returning a copy in getAll() prevents external code from modifying your internal list.
-    //       This is a defensive programming practice.
-    //
-    // OBSERVE: Call addTransaction 3 times, then getAll(). The list should have 3 items.
-
-    
-    // -------------------------------------------------------
-    // TODO TICKET-F027: filterByDateRange(LocalDate from, LocalDate to)
-    // -------------------------------------------------------
-    // WHAT: Filtering means returning only items that match certain criteria.
-    //       This method returns transactions that fall within a date range.
-    //
-    // HOW:  Loop through the list. For each transaction, check if its date is:
-    //         - NOT before the "from" date (use !date.isBefore(from))
-    //         - NOT after the "to" date (use !date.isAfter(to))
-    //       If both conditions are true, add it to a result list and return the result.
-    //
-    // WHY:  Date filtering is essential for financial apps — users want to see
-    //       "all transactions this month" or "last 30 days".
-    //
-    // OBSERVE: Add transactions with different dates, then filter for a specific range.
-    //          Only transactions within that range should appear.
+   
    // public List<BaseTransaction> filterByDateRange(LocalDate from, LocalDate to) {
    //     if (from == null || to == null) {
    //         throw new IllegalArgumentException("from and to must be non-null");
@@ -139,42 +93,28 @@ public class TransactionService {
        // return result;
    // }
 
-    // -------------------------------------------------------
-    // TODO TICKET-F028: calculateTotalByType(String type)
-    // -------------------------------------------------------
-    // WHAT: Aggregation — summing up amounts for a specific type (INCOME or EXPENSE).
-    //
-    // HOW:  Start with BigDecimal.ZERO. Loop through the list.
-    //       For each transaction where getType() matches the parameter,
-    //       add its amount to the total using BigDecimal's .add() method.
-    //       Return the total.
-    //
-    // WHY:  The dashboard needs "Total Income" and "Total Expenses" values.
-    //       Use BigDecimal (not double) for financial calculations to avoid precision errors.
-    //
-    // OBSERVE: Add some income and expense transactions.
-    //          calculateTotalByType("INCOME") should return the sum of all incomes.
-    public BigDecimal calculateTotalByType(String type) {
-        if (type == null) {
-            throw new IllegalArgumentException("type must not be null");
-        }
-        BigDecimal total = BigDecimal.ZERO;
-        for (BaseTransaction t : transactions) {
-            if (type.equals(t.getType())) {
-                total = total.add(t.getAmount());
-            }
-        }
-        return total;
-    }
+   
+    //public BigDecimal calculateTotalByType(String type) {
+  //      if (type == null) {
+   //         throw new IllegalArgumentException("type must not be null");
+  //      }
+  //      BigDecimal total = BigDecimal.ZERO;
+ //       for (BaseTransaction t : transactions) {
+  //          if (type.equals(t.getType())) {
+  //              total = total.add(t.getAmount());
+  //          }
+  //      }
+   //     return total;
+//}
 
     // Bonus: stream version — same behaviour, more idiomatic from Java 8 onwards
-    public BigDecimal calculateTotalByTypeStream(String type) {
-        return transactions.stream()
-                .filter(t -> type.equals(t.getType()))
-                .map(BaseTransaction::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-    // -------------------------------------------------------
+   // public BigDecimal calculateTotalByTypeStream(String type) {
+   //     return transactions.stream()
+   //             .filter(t -> type.equals(t.getType()))
+   //             .map(BaseTransaction::getAmount)
+  //              .reduce(BigDecimal.ZERO, BigDecimal::add);
+  //  }
+ //   // -------------------------------------------------------
     // TODO TICKET-F029: exportToCSV(String filePath)
     // -------------------------------------------------------
     // WHAT: CSV (Comma-Separated Values) is a simple file format for tabular data.
@@ -198,7 +138,7 @@ public class TransactionService {
             bw.newLine();
 
             // Data rows
-            for (BaseTransaction t : transactions) {
+            for (BaseTransaction t : transactions.values()) {
                 bw.write(String.join(",",
                         String.valueOf(t.getTxnId()),
                         t.getType(),
@@ -279,7 +219,8 @@ public class TransactionService {
                         default -> throw new InvalidTransactionException(
                                 "Unknown type on line " + lineNum + ": " + type);
                     };
-                    transactions.add(t);
+                    transactions.put(String.valueOf(t.getTxnId()));
+                
                 } catch (NumberFormatException | DateTimeParseException e) {
                     System.err.println("Skipping bad row at line "
                             + lineNum + ": " + e.getMessage());
@@ -287,6 +228,7 @@ public class TransactionService {
             }
         }
     }
+
     // -------------------------------------------------------
     // TODO TICKET-F033: Add Stream-based filtering
     // -------------------------------------------------------
@@ -305,16 +247,16 @@ public class TransactionService {
     //
     // OBSERVE: Compare the Stream version with the for-loop version (Day 3).
     //          Same result, fewer lines, more readable.
-    public void addTransaction(BaseTransaction t) {
-        if (t == null) {
-            throw new IllegalArgumentException("transaction must not be null");
-        }
-        if (t.getDescription() == null || t.getDescription().isBlank()) {
-            throw new InvalidTransactionException(
-                    "description must not be blank for transaction id=" + t.getTxnId());
-        }
-        transactions.add(t);
-    }
+   // public void addTransaction(BaseTransaction t) {
+    //    if (t == null) {
+    //        throw new IllegalArgumentException("transaction must not be null");
+     //   }
+    //    if (t.getDescription() == null || t.getDescription().isBlank()) {
+    //        throw new InvalidTransactionException(
+   //                 "description must not be blank for transaction id=" + t.getTxnId());
+   //     }
+   //     transactions.add(t);
+  //  }
 
     // -------------------------------------------------------
     // TODO TICKET-F034: Lambda Comparator for custom sorting
@@ -377,4 +319,4 @@ public class TransactionService {
     //          POST a transaction with amount = -10 → should get HTTP 400.
     //          GET a non-existent ID → should get HTTP 404.
     //          These responses come from the exceptions caught by GlobalExceptionHandler.
-}
+
