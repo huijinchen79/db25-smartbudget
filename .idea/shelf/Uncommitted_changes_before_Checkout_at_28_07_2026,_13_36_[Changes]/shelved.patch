@@ -1,0 +1,127 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"a4fc8e51-8023-4534-9db1-89a847d3228e\" name=\"Changes\" comment=\"updated db create_tables,quesries,seed_data.sql\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/console/Main.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/console/Main.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/exception/InvalidTransactionException.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/exception/InvalidTransactionException.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/BaseTransaction.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/BaseTransaction.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/ExpenseTransaction.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/ExpenseTransaction.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/IncomeTransaction.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/IncomeTransaction.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"DatabaseLocalColorSettings\">\n    <colors>\n      <entry key=\"cb294333-3be5-4f8f-98e1-eec76c2159ea\" value=\"\" />\n    </colors>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitHubPullRequestSearchHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPEN&quot;,\n    &quot;assignee&quot;: &quot;huijinchen79&quot;\n  }\n}</component>\n  <component name=\"GithubPullRequestsUISettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;url&quot;: &quot;https://github.com/huijinchen79/db25-smartbudget&quot;,\n    &quot;accountId&quot;: &quot;7ca8f844-04e5-48b6-89a7-990f1c5f588d&quot;\n  }\n}</component>\n  <component name=\"MarkdownSettingsMigration\">\n    <option name=\"stateVersion\" value=\"1\" />\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 3\n}</component>\n  <component name=\"ProjectId\" id=\"3Gr9hQMXS1ON8NZr6kFpWXSiLNN\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.git.unshallow\": \"true\",\n    \"RunOnceActivity.typescript.service.memoryLimit.init\": \"true\",\n    \"codeWithMe.voiceChat.enabledByDefault\": \"false\",\n    \"git-widget-placeholder\": \"branch__day3\",\n    \"kotlin-language-version-configured\": \"true\",\n    \"last_opened_file_path\": \"/Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026\",\n    \"settings.editor.selected.configurable\": \"org.jetbrains.plugins.github.ui.GithubSettingsConfigurable\"\n  },\n  \"keyToStringList\": {\n    \"DatabaseDriversLRU\": [\n      \"postgresql\"\n    ]\n  }\n}]]></component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-jdk-30f59d01ecdd-63390994e64e-intellij.indexing.shared.core-IU-262.8665.337\" />\n        <option value=\"bundled-js-predefined-d6986cc7102b-4abd2a77f808-JavaScript-IU-262.8665.337\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"a4fc8e51-8023-4534-9db1-89a847d3228e\" name=\"Changes\" comment=\"\" />\n      <created>1784718939572</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1784718939572</updated>\n    </task>\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"updated category, main, savinggoal,transction and user.jave\" />\n    <MESSAGE value=\"updated db create_tables,quesries,seed_data.sql\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"updated db create_tables,quesries,seed_data.sql\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 270f002e828d9b3739ca983eed488636c160ba1b)
++++ b/.idea/workspace.xml	(date 1785242043525)
+@@ -1,15 +1,10 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
++  <component name="AutoImportSettings">
++    <option name="autoReloadType" value="SELECTIVE" />
++  </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="a4fc8e51-8023-4534-9db1-89a847d3228e" name="Changes" comment="updated db create_tables,quesries,seed_data.sql">
+-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/console/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/console/Main.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/exception/InvalidTransactionException.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/exception/InvalidTransactionException.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/BaseTransaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/BaseTransaction.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/ExpenseTransaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/ExpenseTransaction.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/IncomeTransaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/model/IncomeTransaction.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java" afterDir="false" />
+-    </list>
++    <list default="true" id="a4fc8e51-8023-4534-9db1-89a847d3228e" name="Changes" comment="" />
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -19,9 +14,22 @@
+     <colors>
+       <entry key="cb294333-3be5-4f8f-98e1-eec76c2159ea" value="" />
+     </colors>
++  </component>
++  <component name="FileTemplateManagerImpl">
++    <option name="RECENT_TEMPLATES">
++      <list>
++        <option value="Test" />
++      </list>
++    </option>
+   </component>
+   <component name="Git.Settings">
++    <option name="RECENT_BRANCH_BY_REPOSITORY">
++      <map>
++        <entry key="$PROJECT_DIR$" value="branch_day4" />
++      </map>
++    </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++    <option name="UPDATE_TYPE" value="REBASE" />
+   </component>
+   <component name="GitHubPullRequestSearchHistory">{
+   &quot;lastFilter&quot;: {
+@@ -38,10 +46,29 @@
+   <component name="MarkdownSettingsMigration">
+     <option name="stateVersion" value="1" />
+   </component>
++  <component name="McpProjectServerCommands">
++    <commands />
++    <urls />
++  </component>
+   <component name="ProjectColorInfo">{
+   &quot;associatedIndex&quot;: 3
+ }</component>
+   <component name="ProjectId" id="3Gr9hQMXS1ON8NZr6kFpWXSiLNN" />
++  <component name="ProjectSessionTemplates">
++    <option name="panelTemplate">
++      <template>
++        <option name="modeId" value="Ask" />
++        <option name="model">
++          <model>
++            <option name="modelType" value="builtin_id" />
++            <option name="modelValue" value="auto" />
++          </model>
++        </option>
++        <option name="targetType" value="BACKGROUND" />
++        <option name="worktreeMode" value="WORKSPACE" />
++      </template>
++    </option>
++  </component>
+   <component name="ProjectViewState">
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+@@ -50,13 +77,14 @@
+   "keyToString": {
+     "RunOnceActivity.OpenProjectViewOnStart": "true",
+     "RunOnceActivity.ShowReadmeOnStart": "true",
++    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+     "RunOnceActivity.git.unshallow": "true",
+     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+     "codeWithMe.voiceChat.enabledByDefault": "false",
+     "git-widget-placeholder": "branch__day3",
+     "kotlin-language-version-configured": "true",
+     "last_opened_file_path": "/Users/siddharthsharma/Downloads/OneDrive_3_22-07-2026",
+-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable"
++    "settings.editor.selected.configurable": "preferences.pluginManager"
+   },
+   "keyToStringList": {
+     "DatabaseDriversLRU": [
+@@ -85,6 +113,27 @@
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+     <option name="version" value="3" />
++  </component>
++  <component name="Vcs.Log.Tabs.Properties">
++    <option name="OPEN_GENERIC_TABS">
++      <map>
++        <entry key="8b8a5f97-58e6-44f8-85f0-ad5e589956dc" value="TOOL_WINDOW" />
++      </map>
++    </option>
++    <option name="TAB_STATES">
++      <map>
++        <entry key="8b8a5f97-58e6-44f8-85f0-ad5e589956dc">
++          <value>
++            <State />
++          </value>
++        </entry>
++        <entry key="MAIN">
++          <value>
++            <State />
++          </value>
++        </entry>
++      </map>
++    </option>
+   </component>
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="updated category, main, savinggoal,transction and user.jave" />
