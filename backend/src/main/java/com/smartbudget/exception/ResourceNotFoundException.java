@@ -20,18 +20,7 @@ package com.smartbudget.exception;
 // ============================================================
 public class ResourceNotFoundException extends RuntimeException {
 
-    // -------------------------------------------------------
-    // TODO: Add a constructor
-    // -------------------------------------------------------
-    // WHAT: Same pattern as InvalidTransactionException — accept a String message, call super(message).
-    //
-    // HOW:  One public constructor, one parameter (String message), one line: super(message).
-    //
-    // WHY:  Used in services like this:
-    //         repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Transaction not found: " + id))
-    //       The message helps developers know WHICH record was missing and WHICH ID was requested.
-    //
-    // OBSERVE: You won't use this until Day 6 when you build the service layer.
-    //          When you call GET /api/transactions/999 (non-existent), the response should be:
-    //          HTTP 404 with body: { "status": 404, "error": "Not Found", "message": "Transaction not found: 999" }
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
 }
