@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="10de48b3-829a-480b-b004-86a9a445c92b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/dao/DatabaseConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/dao/DatabaseConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/dao/TransactionDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/dao/TransactionDAO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/service/TransactionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/test/java/com/smartbudget/service/TransactionServiceTest.java" afterDir="false" />
+    <list default="true" id="10de48b3-829a-480b-b004-86a9a445c92b" name="Changes" comment="day4 final">
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/repository/CategoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/repository/CategoryRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/repository/TransactionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/repository/TransactionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/smartbudget/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/data.sql" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/data.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,5 +68,9 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="day4 final" />
+    <option name="LAST_COMMIT_MESSAGE" value="day4 final" />
   </component>
 </project>
