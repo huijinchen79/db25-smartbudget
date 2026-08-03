@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useCategories } from '../hooks/useBudgetAPI'
 
 // ============================================================
 // TICKET-F088/F089 (Day 8, Sprint 7) — Add Transaction Form
@@ -21,122 +23,163 @@ import { Link } from 'react-router-dom'
 //   e.preventDefault(): Stops the browser's default form submission (page reload)
 //   useNavigate:       React Router's hook for programmatic navigation
 //
+// TICKET-F088: controlled form + inline validation.
+// TICKET-F091: category dropdown driven by useCategories() (real API).
+// TICKET-F089: async submit — POST /api/transactions, redirect on success.
+// TICKET-F092: server errors surface as a red banner instead of a blank page.
 // ============================================================
 
+const TODAY = new Date().toISOString().substring(0, 10)
+
 export default function AddTransactionForm() {
+    const navigate   = useNavigate()
+    const categories = useCategories()
 
-  // -------------------------------------------------------
-  // TODO TICKET-F088 (Day 8): Step 1 — Create form state
-  // -------------------------------------------------------
-  // WHAT: Use useState to create a form state object that holds all input values.
-  //       All inputs are "controlled" — their value comes from React state.
-  //
-  // HOW:  1. Import useState from 'react'
-  //       2. Create state: const [form, setForm] = useState({...})
-  //          with fields: categoryId, amount, txnDate, description
-  //          Set txnDate default to today: new Date().toISOString().substring(0, 10)
-  //       3. Create a handleChange function that updates form state:
-  //          Accept the event (e), extract name and value from e.target,
-  //          update form using setForm with the spread operator: { ...prev, [name]: value }
-  //          The [name] syntax uses the input's "name" attribute to determine which field to update
-  //       4. Add name, value, and onChange attributes to each input element
-  //
-  // WHY:  One handleChange function handles ALL inputs because each input has a "name"
-  //       attribute that matches a key in the form state object.
-  //       This is the standard React pattern — you don't write separate handlers
-  //       for each input field.
-  //
-  // OBSERVE: Type in any input field and console.log(form) — you should see the values update.
+    // F088 — one state object holds every field; handleChange uses [name]
+    //        to update the right slot.
+    const [form, setForm] = useState({
+        categoryId:  '',
+        amount:      '',
+        txnDate:     TODAY,
+        description: '',
+    })
+    const [errors,     setErrors]     = useState({})
+    const [submitting, setSubmitting] = useState(false)
+    const [apiError,   setApiError]   = useState(null)
 
-  // -------------------------------------------------------
-  // TODO TICKET-F091 (Day 8): Step 2 — Populate categories dropdown
-  // -------------------------------------------------------
-  // WHAT: The category dropdown should show real categories from the API,
-  //       not hardcoded options.
-  //
-  // HOW:  1. Import useCategories from '../hooks/useBudgetAPI'
-  //       2. Call it: const categories = useCategories()
-  //       3. In the <select> element, map over categories to create <option> elements:
-  //          Each option has value={c.categoryId} and displays c.name + c.type
-  //       4. Add a default "-- Select category --" option with an empty value
-  //
-  // WHY:  Hardcoding categories creates a mismatch between frontend and backend.
-  //       If someone adds a new category via the API, the dropdown should show it
-  //       automatically — without changing frontend code.
-  //
-  // OBSERVE: Open the form — the dropdown should show: Salary (INCOME), Groceries (EXPENSE), etc.
-  //          These come from the database via GET /api/categories.
+    function handleChange(e) {
+        const { name, value } = e.target
+        setForm(prev => ({ ...prev, [name]: value }))
+    }
 
-  // -------------------------------------------------------
-  // TODO TICKET-F089 (Day 8): Step 3 — Wire up form submission
-  // -------------------------------------------------------
-  // WHAT: When the user clicks "Add Transaction," send the form data to the API.
-  //       Validate the input first, then POST to /api/transactions.
-  //
-  // HOW:  1. Import useNavigate from 'react-router-dom'
-  //       2. Call it: const navigate = useNavigate()
-  //       3. Create an async handleSubmit function:
-  //          a. Call e.preventDefault() to stop the browser from reloading the page
-  //          b. VALIDATE:
-  //             - Category must be selected (form.categoryId is not empty)
-  //             - Amount must be > 0 (parseFloat(form.amount) > 0)
-  //             - Date must not be in the future (form.txnDate <= today)
-  //             If any validation fails, show an alert or set an error state
-  //          c. Build the request body as a JSON object:
-  //             Include user (with userId), category (with categoryId),
-  //             amount (as a number), txnDate, description, and type
-  //             NOTE: Determine the type from the selected category's type field
-  //          d. Call fetch('/api/transactions', { method: 'POST', headers: {...}, body: JSON.stringify(...) })
-  //          e. If the response is OK, navigate to '/transactions' (redirect to the list)
-  //          f. If not OK, show an error message
-  //       4. Add onSubmit={handleSubmit} to the <form> element
-  //       5. Add noValidate to the <form> to disable browser validation (you handle it in JS)
-  //
-  // WHY:  Client-side validation gives instant feedback (no waiting for the server).
-  //       The server ALSO validates (TransactionService) — this is "defense in depth."
-  //       useNavigate('/transactions') redirects without a full page reload.
-  //
-  // OBSERVE: Fill in the form with valid data and submit.
-  //          You should be redirected to /transactions and see the new entry in the list.
-  //          Try submitting with empty category or negative amount — you should see validation errors.
+    function validate() {
+        const errs = {}
+        if (!form.categoryId)                        errs.categoryId  = 'Choose a category'
+        if (!form.amount || parseFloat(form.amount) <= 0)
+            errs.amount      = 'Amount must be greater than 0'
+        if (!form.txnDate)                           errs.txnDate     = 'Date is required'
+        else if (form.txnDate > TODAY)               errs.txnDate     = 'Date cannot be in the future'
+        if (!form.description.trim())                errs.description = 'Description is required'
+        return errs
+    }
 
-  return (
-    <div>
-      <h1 style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>Add Transaction</h1>
+    // F089 — async submit. On success we navigate to the list so the user
+    //        immediately sees their new row. On failure we keep the form
+    //        values intact and show the error.
+    async function handleSubmit(e) {
+        e.preventDefault()
+        setApiError(null)
 
-      <div className="card" style={{ maxWidth: 540, textAlign: 'center', padding: '3rem' }}>
-        <p style={{ fontSize: '1.1rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-          Build this form in <strong>Sprint 7 (Day 8)</strong>
-        </p>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-          TICKET-F088: Create a controlled form with category, amount, date, and description fields
-        </p>
+        const errs = validate()
+        setErrors(errs)
+        if (Object.keys(errs).length > 0) return
 
-        {/* ------------------------------------------------------- */}
-        {/* TODO TICKET-F088: Replace this placeholder with a form   */}
-        {/* ------------------------------------------------------- */}
-        {/*
-          WHAT: An HTML form with 4 fields:
-                - Category <select> dropdown
-                - Amount <input type="number">
-                - Date <input type="date">
-                - Description <input type="text">
-                Plus a Submit button.
+        // Look up the category so we can include its type in the payload.
+        const selected = categories.find(c => String(c.categoryId) === String(form.categoryId))
+        if (!selected) {
+            setErrors({ categoryId: 'Category is invalid — pick another' })
+            return
+        }
 
-          HOW:  Wrap inputs in a <form> with onSubmit={handleSubmit} and noValidate.
-                Each input needs: name, value={form.fieldName}, onChange={handleChange}
-                Group each input in a <div className="form-group"> with a <label>.
-                The submit button should be <button type="submit" className="btn btn-primary">.
+        setSubmitting(true)
+        try {
+            const res = await fetch('/api/transactions', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({
+                    user:        { userId: 1 },                              // hardcoded for foundation
+                    category:    { categoryId: Number(form.categoryId) },
+                    amount:      parseFloat(form.amount),
+                    txnDate:     form.txnDate,
+                    description: form.description.trim(),
+                    type:        selected.type,                              // derived from category
+                }),
+            })
 
-          WHY:  The "name" attribute on each input must match the key in your form state.
-                This is what makes handleChange work with one function for all inputs.
+            if (!res.ok) {
+                const body = await res.json().catch(() => null)
+                throw new Error(body?.message || `HTTP ${res.status}`)
+            }
+            navigate('/transactions')
+        } catch (err) {
+            setApiError(err.message || 'Failed to save transaction')
+        } finally {
+            setSubmitting(false)
+        }
+    }
 
-          OBSERVE: After building, the form should render with proper labels and styling.
-                   All inputs should be interactive (typing updates the value).
-        */}
+    return (
+        <div>
+            <h1 style={{ marginBottom: '1.5rem', color: 'var(--primary)' }}>Add Transaction</h1>
 
-        <Link to="/transactions" className="btn btn-secondary">Back to Transactions</Link>
-      </div>
-    </div>
-  )
+            <div className="card" style={{ maxWidth: 540 }}>
+                {apiError && (
+                    <div className="error-banner" role="alert" style={{
+                        background: '#FADBD8', color: 'var(--danger)',
+                        border: '1px solid #F1948A',
+                        padding: '0.75rem 1rem', borderRadius: 'var(--radius)',
+                        marginBottom: '1rem', fontSize: '0.9rem',
+                    }}>
+                        <strong>Could not save:</strong> {apiError}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} noValidate>
+                    <div className="form-group">
+                        <label htmlFor="categoryId">Category</label>
+                        <select id="categoryId" name="categoryId"
+                                value={form.categoryId} onChange={handleChange}>
+                            <option value="">— Select category —</option>
+                            {categories.map(c => (
+                                <option key={c.categoryId} value={c.categoryId}>
+                                    {c.name} ({c.type})
+                                </option>
+                            ))}
+                        </select>
+                        {errors.categoryId && <FieldError text={errors.categoryId} />}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="amount">Amount (£)</label>
+                        <input id="amount" name="amount" type="number"
+                               step="0.01" min="0.01"
+                               value={form.amount} onChange={handleChange} />
+                        {errors.amount && <FieldError text={errors.amount} />}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="txnDate">Date</label>
+                        <input id="txnDate" name="txnDate" type="date"
+                               max={TODAY}
+                               value={form.txnDate} onChange={handleChange} />
+                        {errors.txnDate && <FieldError text={errors.txnDate} />}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="description">Description</label>
+                        <input id="description" name="description" type="text"
+                               maxLength={200}
+                               value={form.description} onChange={handleChange} />
+                        {errors.description && <FieldError text={errors.description} />}
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1rem' }}>
+                        <button type="submit" className="btn btn-primary" disabled={submitting}>
+                            {submitting ? 'Saving…' : 'Add Transaction'}
+                        </button>
+                        <Link to="/transactions" className="btn btn-secondary">Cancel</Link>
+                    </div>
+                </form>
+            </div>
+        </div>
+    )
+}
+
+/** Small inline field-error message (red text under the input). */
+function FieldError({ text }) {
+    return (
+        <span style={{ color: 'var(--danger)', fontSize: '0.8rem', marginTop: '0.15rem' }}>
+      {text}
+    </span>
+    )
 }
