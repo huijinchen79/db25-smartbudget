@@ -1,0 +1,292 @@
+/* ─────────────────────────────────────────────────────────
+   SmartBudget — base stylesheet
+   (F073 base + F074 nav + F075 table + F076 form)
+   ───────────────────────────────────────────────────────── */
+
+   :root {
+    --db-blue:        #003366;
+    --db-blue-light:  #1a4d80;
+    --db-gold:        #C8A951;
+    --income:         #2e7d32;
+    --expense:        #c62828;
+    --bg:             #f5f5f5;
+    --card-bg:        #ffffff;
+    --text:           #222;
+    --muted:          #666;
+    --radius:         8px;
+    --shadow:         0 1px 4px rgba(0,0,0,.08);
+  }
+  
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+  }
+  
+  main {
+    max-width: 1100px;
+    margin: 1.5rem auto;
+    padding: 0 1rem;
+  }
+  
+  h1, h2, h3 { margin-top: 0; }
+  
+  /* ─── Dashboard cards ───────────────────────────────────── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .card {
+    background: var(--card-bg);
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .card h3 {
+    font-size: .9rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: .25rem;
+  }
+  .card-value { font-size: 1.75rem; font-weight: 600; margin: 0; }
+  .card-value.income  { color: var(--income); }
+  .card-value.expense { color: var(--expense); }
+  
+  /* Recent transactions list on dashboard */
+  #recent-txns {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  #recent-txns:empty::before {
+    content: "No recent transactions yet.";
+    display: block;
+    padding: 1rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+  #recent-txns li {
+    padding: .75rem 1rem;
+    border-bottom: 1px solid #eee;
+  }
+  #recent-txns li:last-child { border-bottom: 0; }
+  
+  /* Chart placeholder on dashboard */
+  .placeholder {
+    background: var(--card-bg);
+    border: 1px dashed #cfcfcf;
+    border-radius: var(--radius);
+    padding: 2rem;
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+  }
+  
+  /* ─── Header & navigation (F074) ───────────────────────── */
+  header {
+    background: var(--db-blue);
+    color: #fff;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 1.25rem;
+    letter-spacing: .02em;
+  }
+  
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .25rem;
+  }
+  nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: .5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background .15s, border-color .15s;
+  }
+  nav a:hover {
+    background: var(--db-blue-light);
+  }
+  nav a.active {
+    background: var(--db-blue-light);
+    border-bottom: 2px solid var(--db-gold);
+  }
+  nav a:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+  
+  /* ─── Table (F075) ─────────────────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin: 1rem 0;
+  }
+  
+  thead {
+    background: var(--db-blue);
+    color: #fff;
+  }
+  
+  th, td {
+    padding: .75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+  }
+  
+  th {
+    font-weight: 600;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    font-size: .8rem;
+  }
+  
+  tbody tr:nth-child(even) { background: #fafafa; }
+  tbody tr:hover           { background: #eef5fb; }
+  tbody tr:last-child td   { border-bottom: 0; }
+  
+  /* Amount cells — coloured by INCOME / EXPENSE class (added by JS on Day 8) */
+  td.amount         { text-align: right; font-variant-numeric: tabular-nums; }
+  td.amount.income  { color: var(--income);  font-weight: 600; }
+  td.amount.expense { color: var(--expense); font-weight: 600; }
+  
+  /* Loading + error helpers */
+  #loading {
+    padding: 1rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .error-msg {
+    background: #ffebee;
+    color: var(--expense);
+    padding: .75rem 1rem;
+    border-radius: var(--radius);
+    margin: 1rem 0;
+  }
+  
+  /* ─── Form (F076) ──────────────────────────────────────── */
+  form {
+    max-width: 480px;
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  
+  label {
+    display: block;
+    margin: 1rem 0 .25rem;
+    font-weight: 500;
+    font-size: .9rem;
+  }
+  label:first-of-type { margin-top: 0; }
+  
+  input, select {
+    width: 100%;
+    padding: .55rem .7rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font: inherit;
+    background: #fff;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus-visible,
+  select:focus-visible {
+    outline: none;
+    border-color: var(--db-blue);
+    box-shadow: 0 0 0 3px rgba(0, 51, 102, .15);
+  }
+  
+  /* Show :invalid only AFTER the user has tried to submit (JS on Day 8 adds .was-submitted) */
+  form.was-submitted input:invalid,
+  form.was-submitted select:invalid {
+    border-color: var(--expense);
+    background: #fff5f5;
+  }
+  
+  button[type="submit"] {
+    margin-top: 1.5rem;
+    padding: .75rem 1.75rem;
+    background: var(--db-blue);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  button[type="submit"]:hover  { background: var(--db-blue-light); }
+  button[type="submit"]:active { transform: translateY(1px); }
+  
+  #form-message {
+    margin-top: 1rem;
+    padding: .75rem 1rem;
+    border-radius: var(--radius);
+    display: none;
+  }
+  #form-message.success { display: block; background: #e8f5e9; color: var(--income); }
+  #form-message.error   { display: block; background: #ffebee; color: var(--expense); }
+  
+  /* ─── Savings goal cards (F072 companion styles) ───────── */
+  .goal-card {
+    background: var(--card-bg);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .goal-card h3 { margin-bottom: .25rem; }
+  .progress-bar {
+    height: 12px;
+    background: #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: .5rem 0;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--db-blue);
+    transition: width .3s;
+  }
+  .progress-text {
+    margin: .25rem 0 0;
+    font-size: .9rem;
+    color: var(--muted);
+  }
+  
+  /* ─── Responsive breakpoints ───────────────────────────── */
+  @media (max-width: 768px) {
+    .cards { grid-template-columns: 1fr; }
+    main   { margin-top: 1rem; }
+    /* On small screens, wrap the whole table in a horizontal scroll container */
+    table  { display: block; overflow-x: auto; white-space: nowrap; }
+  }
+  
+  @media (max-width: 480px) {
+    header { flex-direction: column; align-items: flex-start; }
+    nav    { width: 100%; }
+    nav a  { flex: 1; text-align: center; }
+  }
+  
