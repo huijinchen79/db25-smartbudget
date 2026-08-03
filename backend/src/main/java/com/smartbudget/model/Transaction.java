@@ -3,6 +3,19 @@ package com.smartbudget.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * TICKET-F014 — Transaction POJO (Day 2)
+ *
+ * Concrete plain Java class representing one row from the Day 1 `transactions` table.
+ *
+ * Money is stored as {@link BigDecimal} — never {@code double}. Floating point cannot
+ * represent decimal money exactly ({@code 0.1 + 0.2 == 0.30000000000000004} in Java),
+ * so any finance code must use {@code BigDecimal}.
+ *
+ * NOTE: Day 3 will introduce an abstract {@code BaseTransaction} hierarchy
+ * ({@code IncomeTransaction}, {@code ExpenseTransaction}) that lives alongside this
+ * concrete class — that OOP refactor is Day 3 material and does not touch this file.
+ */
 public class Transaction {
 
     private int txnId;
@@ -11,7 +24,7 @@ public class Transaction {
     private BigDecimal amount;
     private LocalDate txnDate;
     private String description;
-    private String type;          // 'INCOME' or 'EXPENSE'
+    private String type;  // 'INCOME' or 'EXPENSE'
 
     public Transaction() { }
 
@@ -21,7 +34,7 @@ public class Transaction {
         this.txnId       = txnId;
         this.userId      = userId;
         this.categoryId  = categoryId;
-        setAmount(amount);
+        setAmount(amount);   // run validation in the constructor too
         this.txnDate     = txnDate;
         this.description = description;
         this.type        = type;
@@ -40,7 +53,7 @@ public class Transaction {
     public void setAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException(
-                    "amount must be > 0, got: " + amount);
+                "amount must be > 0, got: " + amount);
         }
         this.amount = amount;
     }
@@ -57,7 +70,7 @@ public class Transaction {
     @Override
     public String toString() {
         return String.format(
-                "Transaction[id=%d, user=%d, cat=%d, amount=%s, date=%s, type=%s, desc='%s']",
-                txnId, userId, categoryId, amount, txnDate, type, description);
+            "Transaction[id=%d, user=%d, cat=%d, amount=%s, date=%s, type=%s, desc='%s']",
+            txnId, userId, categoryId, amount, txnDate, type, description);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 // ============================================================
-// TICKET-F056 to F059 (Day 6, Sprint 5) — Transaction REST Controller  [SOLVED]
+// TICKET-F056 to F059 (Day 6) + TICKET-F102 (Day 9) — Transaction REST Controller  [SOLVED]
 // ============================================================
 //
 // WHAT: A REST Controller is the entry point for HTTP requests.
@@ -23,9 +23,9 @@ import java.util.List;
 //       This 3-layer architecture (Controller → Service → Repository) is the
 //       standard pattern in Spring Boot applications.
 //
-// Day-9 update (F102): PUT endpoint is a Day-9 addition and is intentionally
-// left out of this Day-6 solved file to keep the surface area consistent with
-// the Day-6 tickets (F056–F059).
+// Day-9 update (F102): PUT /api/transactions/{id} added. The service's
+// update(...) method (implemented in Day 6) already handles field-level
+// validation and 404 propagation, so the controller stays thin.
 // ============================================================
 @RestController
 @RequestMapping("/api/transactions")
@@ -94,5 +94,32 @@ public class TransactionController {
         // Delegates to service; service throws ResourceNotFoundException
         // when the id doesn't exist → GlobalExceptionHandler maps to 404.
         service.delete(id);
+    }
+
+    // -------------------------------------------------------
+    // TICKET-F102 (Day 9) — PUT /api/transactions/{id} (update)
+    // -------------------------------------------------------
+    // WHAT: Updates fields on an existing transaction.
+    //       Only fields present in the request body are changed
+    //       (partial update semantics — the service ignores nulls).
+    //
+    // WHY:  Until Day 9 the only way to "fix" a wrong row was
+    //       delete-and-recreate, which loses the original txnId
+    //       and any audit trail. This endpoint keeps the row identity.
+    //
+    // OBSERVE: PUT with {"amount": 200} on a row that had amount=100
+    //          → row is persisted with amount=200, other fields untouched.
+    //          Invalid amount (<= 0) → 400 via InvalidTransactionException.
+    //          Missing id → 404 via ResourceNotFoundException.
+    @PutMapping("/{id}")
+    public Transaction update(@PathVariable Long id,
+                              @RequestBody Transaction body) {
+        return service.update(
+                id,
+                body.getAmount(),
+                body.getTxnDate(),
+                body.getDescription(),
+                body.getType()
+        );
     }
 }

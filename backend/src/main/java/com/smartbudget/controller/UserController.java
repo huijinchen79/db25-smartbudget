@@ -56,13 +56,15 @@ public class UserController {
     @GetMapping("/{id}")
     public User getById(@PathVariable Long id) {
         return repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "User " + id + " not found"));
     }
 
     // Bonus: GET /api/users/by-email/{email}
     @GetMapping("/by-email/{email}")
     public User getByEmail(@PathVariable String email) {
         return repo.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("No user with email: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No user with email: " + email));
     }
 }

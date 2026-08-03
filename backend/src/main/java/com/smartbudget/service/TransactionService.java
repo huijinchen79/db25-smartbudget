@@ -29,16 +29,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 // ============================================================
-// TransactionService — evolves across THREE days:  [SOLVED for Day 6]
+// TransactionService — evolves across THREE days:  [SOLVED for Day 6 + Day 9]
 //
 // Day 3 (Sprint 2) — TICKET-F026 to F030: Plain Java service with List
 // Day 4 (Sprint 3) — TICKET-F032 to F034: Refactor with HashMap + Streams + Lambdas
 // Day 6 (Sprint 5) — TICKET-F063:         Spring @Service using JPA repositories
+// Day 9 (Sprint 8) — TICKET-F102:         update(...) already introduced in Day 6
+//                                          is what F102's PUT endpoint calls.
 //
-// Each day BUILDS on the previous. The Day 6 solved copy keeps the
-// Day 3/4 in-memory helper methods available (they operate on the
-// Day-3 `com.smartbudget.model.BaseTransaction` type), while the
-// Day 6 methods form the *actual* production service surface used
+// Each day BUILDS on the previous. The Day 3/4 in-memory helper methods
+// remain available (they operate on the Day-3 `BaseTransaction` type),
+// while the Day 6/9 methods form the production service surface used
 // by the controllers and integration tests.
 // ============================================================
 @Service
@@ -176,6 +177,8 @@ public class TransactionService {
 
     // ==========================================================
     //  DAY 6 (F063) — CRUD backed by JPA repositories
+    //  DAY 9 (F102) — update() (already present since Day 6) is what
+    //                 the new PUT endpoint on the controller calls.
     // ==========================================================
 
     @Transactional(readOnly = true)
@@ -241,6 +244,12 @@ public class TransactionService {
         txnRepo.deleteById(id);
     }
 
+    // -------------------------------------------------------
+    // DAY 9 (F102) — update(...) is the write-path behind PUT /api/transactions/{id}.
+    // Nulls in the request body are treated as "leave unchanged" — partial
+    // update semantics. Any invalid field (amount <= 0, future date,
+    // unknown type) short-circuits with InvalidTransactionException (HTTP 400).
+    // -------------------------------------------------------
     @Transactional
     public Transaction update(Long id, BigDecimal amount, LocalDate date,
                               String description, String type) {

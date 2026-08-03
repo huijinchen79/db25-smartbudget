@@ -68,7 +68,8 @@ public class SavingsGoalController {
     public SavingsGoal contribute(@PathVariable Long id,
                                   @RequestBody ContributionRequest body) {
         SavingsGoal goal = repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Goal " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Goal " + id + " not found"));
 
         BigDecimal amount = (body == null) ? null : body.amount();
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {

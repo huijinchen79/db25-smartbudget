@@ -1,31 +1,39 @@
 package com.smartbudget.model;
 
-
+/**
+ * TICKET-F013 — Category POJO (Day 2)
+ *
+ * Java mirror of the Day 1 `categories` table. The `type` field is guarded by the
+ * setter — this is the Java equivalent of the SQL
+ *   CHECK (type IN ('INCOME','EXPENSE'))
+ * constraint. Pushing the rule into the object stops bad data from ever reaching
+ * the DAO on Day 4.
+ */
 public class Category {
 
     private int categoryId;
     private String name;
-    private String type;          // 'INCOME' or 'EXPENSE'
+    private String type;  // 'INCOME' or 'EXPENSE'
 
     public Category() { }
 
     public Category(int categoryId, String name, String type) {
         this.categoryId = categoryId;
         this.name       = name;
-        setType(type);            // run validation in the constructor too
+        setType(type);   // run validation in the constructor too
     }
 
-    public int getCategoryId()           { return categoryId; }
-    public void setCategoryId(int id)    { this.categoryId = id; }
+    public int getCategoryId()              { return categoryId; }
+    public void setCategoryId(int id)       { this.categoryId = id; }
 
-    public String getName()              { return name; }
-    public void setName(String name)     { this.name = name; }
+    public String getName()                 { return name; }
+    public void setName(String name)        { this.name = name; }
 
-    public String getType()              { return type; }
+    public String getType()                 { return type; }
     public void setType(String type) {
         if (!"INCOME".equals(type) && !"EXPENSE".equals(type)) {
             throw new IllegalArgumentException(
-                    "type must be 'INCOME' or 'EXPENSE', got: " + type);
+                "type must be 'INCOME' or 'EXPENSE', got: " + type);
         }
         this.type = type;
     }
@@ -33,7 +41,7 @@ public class Category {
     @Override
     public String toString() {
         return "Category{id=" + categoryId
-                + ", name='" + name + '\''
-                + ", type='" + type + "'}";
+             + ", name='" + name + '\''
+             + ", type='" + type + "'}";
     }
 }
